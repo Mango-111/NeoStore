@@ -1,4 +1,4 @@
-const userModel = require('../db/UsersSchema')
+const userModel = require('../db/UserSchema')
 const otpModel = require('../db/OtpSchema');
 // const multer=require('multer');
 
@@ -14,12 +14,12 @@ const otpModel = require('../db/OtpSchema');
 
 // To get the registered users
 async function getUsers(req,res,next){
-    let users = await userModel.find();
+    let user = await userModel.find();
     
     res.status(200).json({
         success:true,
         status_code:200,
-        users,
+        user,
     });
 }
 
@@ -198,6 +198,36 @@ async function updateProfile(req,res){
         status_code:200,
         message:"Profile updated successfully"
     })
+};
+// Get User Detail
+async function getUserDetails(req, res, next){
+    const user = await userModel.findById(req.user.id);
+  
+    res.status(200).json({
+      success: true,
+      user,
+    });
 }
 
-module.exports={postUsers,getUsers,logout,sendEmail,changePassword,resetPassword,updateProfile}
+
+// post User Detail
+async function postUserData(req, res, next){
+   const user= userModel.findOne({ emailAddress: req.body.email}, (err, data) => {
+        // console.log(data)
+        if (err) {
+            res.send("its error")
+        }
+        else{
+            res.json({
+                data:data
+            })
+        }
+    })
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+}
+
+module.exports={postUsers,getUsers,logout,sendEmail,changePassword,resetPassword,updateProfile,getUserDetails,postUserData}

@@ -1,9 +1,9 @@
 const express = require('express');
 const { signup } = require('../Controller/authController');
 const router = express.Router()
-const {getUsers,logout,sendEmail,changePassword, resetPassword, updateProfile} = require('../Controller/UserController')
+const {getUsers,logout,sendEmail,changePassword, resetPassword, updateProfile, getUserDetails,postUserData} = require('../Controller/UserController')
 verifyToken = require('../middleware/authJWT');
-const {signin} =require('../Controller/authController')
+const {signin} =require('../Controller/authController');
 
 const multer=require('multer');
 
@@ -16,16 +16,6 @@ const storage=multer.diskStorage({
       cb(null,file.fieldname+"-"+Date.now()+path.extname(file.originalname))
     }
 })
-// let upload = multer({ storage: storage }).single('myfile');
-// upload(req, res, (err) => {
-//     if (!req.file) {
-//         res.send("Please select a file");
-//     }
-//     else if (err) {
-//         res.send("Some uploading error");
-//     }
-// })
-
 router.use(express.static("uploads"));
 
 router.post('/addUser',signup,(req,res)=>{
@@ -41,7 +31,10 @@ router.post('/addUser',signup,(req,res)=>{
    
 })
 router.post('/Login',signin,(req,res)=>{
-
+  console.log("Incoming data",req.password);
+})
+router.post('/loginUser',(req,res)=>{
+  postUserData(req,res);
 })
 router.get('/getUsers',(req,res)=>{
   getUsers(req,res);
@@ -57,6 +50,9 @@ router.post('/changePass',(req,res)=>{
 })
 router.put('/resetPassword',(req,res)=>{
   resetPassword(req,res);
+})
+router.get('/Me',(req,res)=>{
+  getUserDetails(req,res);
 })
 router.put('/editProfile',(req,res)=>{
   let upload = multer({ storage: storage }).single('myfile');

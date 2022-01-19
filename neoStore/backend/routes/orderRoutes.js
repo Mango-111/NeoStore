@@ -10,7 +10,7 @@ router.post('/newOrder',(req,res)=>{
 router.get('/oneProduct/:id',(req,res)=>{
     getSingleOrder(req,res);
 })
-router.get('/myOrders',(req,res)=>{
+router.get('/myOrders/:id',(req,res)=>{
     getAllOrder(req,res);
 })
 router.get('/allOrders',(req,res)=>{

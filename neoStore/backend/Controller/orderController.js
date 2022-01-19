@@ -17,9 +17,9 @@ async function newOrder(data,req,res,next){
 
 // get logged in user's single order
 async function getSingleOrder(req,res,next){
-    const order = await orderModel.findById(req.params.id).populate("user");
+    const orders = await orderModel.findById(req.params.id).populate("user");
 
-      if (!order) {
+      if (!orders) {
         return res.status(404).json({
             success:false,
             status_code:404,
@@ -29,30 +29,43 @@ async function getSingleOrder(req,res,next){
       }
       res.status(200).json({
         success: true,
-        order,
+        orders,
       });
 }
 
 //  get all the orders of logged in user
 async function getAllOrder(req,res,next){
-    const order = await orderModel.find({user: req.user._id});
+   console.log(req.body);
+   let user = req.params.id
+   console.log("incoming id",user)
+    orderModel.find({user:user},(err,orders)=>{
+      console.log(orders);
     
-      res.status(200).json({
-        success: true,
-        order,
-      });
+      if (!orders) {
+        return res.status(404).json({
+          status:false,
+          status_code:404,
+          message:"Order not found with this id"
+        });
+      }
+        res.status(200).json({
+          success: true,
+          orders,
+        });
+});
+   
 }
 // get all orders (admin route)
 async function getAllOrderAdmin(req,res,next){
-    const order = await orderModel.find();
+    const orders = await orderModel.find();
     let totalAmount = 0;
-    order.forEach(order=>{
+    orders.forEach(order=>{
         totalAmount+=order.totalPrice;
     });
     
       res.status(200).json({
         success: true,
-        order,
+        orders,
         totalAmount,
       });
 }
