@@ -1,16 +1,8 @@
 const userModel = require('../db/UserSchema')
 const otpModel = require('../db/OtpSchema');
-// const multer=require('multer');
-
-// //for uploading 
-// const storage=multer.diskStorage({
-//     destination:(req,file,cb)=>{
-//         cb(null,'uploads/')
-//     },
-//     filename:(req,file,cb)=>{
-//       cb(null,file.fieldname+"-"+Date.now()+path.extname(file.originalname))
-//     }
-// })
+const path = require('path');
+const fileUpload = require('express-fileupload');
+const util = require('util');
 
 // To get the registered users
 async function getUsers(req,res,next){
@@ -172,32 +164,34 @@ async function resetPassword(req,res){
 }
 // To update user profile
 async function updateProfile(req,res){
-    // let upload = multer({ storage: storage }).single('myfile');
-    // upload(req, res, (err) => { 
-    //     if (!req.file) {
-    //         res.send("Please select a file");
-    //     }
-    //     else if (err) {
-    //         res.send("Some uploading error");
-    //     }
-    // })
-    const newUserData = {
-        firstname: req.body.firstname,
-        // LastName:req.body.LastName,
-        // email: req.body.email,
-        // mobile:req.body.mobile,
-        profile_img:req.file.file,
-      };
-    const user = userModel.findByIdAndUpdate(req.user._id,newUserData,{
-        new: true,
-        runValidators:true,
-        useFindAndModify:false,
-    });
-    res.status(200).json({
-        success:true,
-        status_code:200,
-        message:"Profile updated successfully"
-    })
+    console.log(req.body);
+    const user = userModel.findOne({email:req.body.email})                          
+    if(!user){
+        res.json({
+            message:"User not found"
+        })
+    }
+    else if(user){
+        console.log("myemail",user);
+        let file = req.files.profile_img;
+        console.log(file.name);
+        file.mv('C:/Users/Neosoft/Documents/Neostore/neoStore/neostore/public/Uploads/'+ file.name)
+        userModel.updateOne({
+            // email:req.body.email,
+            // firstname:req.body.firstname,
+            // LastName:req.body.LastName,
+            // mobile:req.body.mobile,
+            // password:req.body.password,
+            profile_img:file.name,
+            });
+        }
+    else{
+        res.status(200).json({
+            success:true,
+            status_code:200,
+            message:"Profile updated successfully"
+        })
+    }
 };
 // Get User Detail
 async function getUserDetails(req, res, next){
@@ -224,10 +218,10 @@ async function postUserData(req, res, next){
         }
     })
 
-    res.status(200).json({
-      success: true,
-      user,
-    });
+    // res.status(200).json({
+    //   success: true,
+    //   user,
+    // });
 }
 
 module.exports={postUsers,getUsers,logout,sendEmail,changePassword,resetPassword,updateProfile,getUserDetails,postUserData}

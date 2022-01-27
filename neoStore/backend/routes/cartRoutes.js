@@ -8,7 +8,7 @@ router.post('/newCart',(req,res)=>{
     res.send("Order placed")
 })
 router.post('/getCartItems',(req,res)=>{
-    getAllCartData(req,res);
+    getCartItems(req,res);
 })
 router.put('/updateCart/:id',(req,res)=>{
     updaetTheCart(req,res);

@@ -1,3 +1,5 @@
+const productModel = require('../db/ProductsSchema');
+
 class ApiFeatures {
   constructor(query, queryStr) {
     this.query = query;
@@ -43,18 +45,6 @@ class ApiFeatures {
 
     return this;
   }
-  searchCategory() {
-    const catKeyword = this.queryStr.catKeyword
-      ? {
-        category_name: {
-            $regex: this.queryStr.catKeyword,
-            $options: "i",
-          },
-        }
-      : {};
-    console.log(catKeyword)
-    this.query = this.query.find({ ...catKeyword});
-    return this;
-  }
 }
+
 module.exports=ApiFeatures;

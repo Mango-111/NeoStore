@@ -16,7 +16,7 @@ async function getAllProducts(req,res){
   const apiFeature = new ApiFeatures(ProductModel.find(), req.query)
     .search()
     .filter()
-    .searchCategory()
+    // .searchCategory()
 
   let products = apiFeature.query;
 
@@ -33,14 +33,6 @@ async function getAllProducts(req,res){
     resultPerPage,
     filteredProductsCount,
   });
-    // let productDetails = await ProductModel.find(query)
-    // .populate(["category_id","color_id","user"])
-    // .then(product=>{
-    //     res.status(200).json({
-    //                     success:true,
-    //                     product
-    //                 });
-    // }) 
 }
 // Get Product Details
 async function getProductDetails(req, res, next){
@@ -127,5 +119,51 @@ async function getSearch(req,res,next){
         SearchProduct
     })
 }
+// Category and color filter
+const searchCategory=(req,res)=>{
+    let cat = req.params.cat;
+    let col = req.params.col
 
-module.exports={postProductData,getAllProducts,updaetTheProduct,deleteProduct,getOneProduct,getSearch,getProductDetails}
+    // let obj ={
+    //     color_id:col,
+    //     category_id:cat,
+    // }
+
+    // console.log(obj);
+  
+    if (cat == "dummy") {
+       ProductModel.find({ category_id: cat })
+          .populate()
+          .then(product => {
+             console.log("cat")
+             console.log(product);
+  
+             res.json({ data1: product, err: "0" })
+  
+          })
+    }
+    else if (col == "dummy") {
+     ProductModel.find({ color_id: col})
+          .populate()
+          .then(product => {
+             console.log("col")
+             console.log(product);
+  
+             res.json({ data1: product, err: "0" })
+  
+          })
+    }
+    else {
+        console.log(cat);
+        ProductModel.find({category_id:cat})
+          .populate()
+          .then(product => {
+             console.log("col and cat")
+             console.log(product);
+  
+             res.json({ data1: product, err: "0" })
+  
+          })
+    }
+}
+module.exports={postProductData,getAllProducts,updaetTheProduct,deleteProduct,getOneProduct,getSearch,getProductDetails,searchCategory}

@@ -3,9 +3,12 @@ const router = express.Router()
 const { AddCategory } = require('../Controller/categoryController');
 const { postColor } = require('../Controller/colorController');
 const {isUserLoggedIn} = require('../Controller/authController')
-const {postProductData,getAllProducts,updaetTheProduct, deleteProduct, getOneProduct,getSearch, getProductDetails} = require("../Controller/productController")
+const {postProductData,getAllProducts,updaetTheProduct, deleteProduct, getOneProduct,getSearch, getProductDetails,searchCategory} = require("../Controller/productController");
 // const app=express();
 
+router.get('/searchCategory/:cat',(req,res)=>{
+    searchCategory(req,res);
+})
 router.post('/newProduct',(req,res)=>{
     console.log(req.body)
     postProductData(req.body)

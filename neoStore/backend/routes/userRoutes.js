@@ -5,29 +5,7 @@ const {getUsers,logout,sendEmail,changePassword, resetPassword, updateProfile, g
 verifyToken = require('../middleware/authJWT');
 const {signin} =require('../Controller/authController');
 
-const multer=require('multer');
-
-//for uploading 
-const storage=multer.diskStorage({
-    destination:(req,file,cb)=>{
-        cb(null,'uploads/')
-    },
-    filename:(req,file,cb)=>{
-      cb(null,file.fieldname+"-"+Date.now()+path.extname(file.originalname))
-    }
-})
-router.use(express.static("uploads"));
-
 router.post('/addUser',signup,(req,res)=>{
-  let upload = multer({ storage: storage }).single('myfile');
-  upload(req, res, (err) => {
-    if (!req.file) {
-        res.send("Please select a file");
-    }
-    else if (err) {
-        res.send("Some uploading error");
-    }
-})
    
 })
 router.post('/Login',signin,(req,res)=>{
@@ -54,21 +32,11 @@ router.put('/resetPassword',(req,res)=>{
 router.get('/Me',(req,res)=>{
   getUserDetails(req,res);
 })
-router.put('/editProfile',(req,res)=>{
-  let upload = multer({ storage: storage }).single('myfile');
-  upload(req, res, (err) => {
-    if (!req.file) {
-        res.send("Please select a file");
-    }
-    else if (err) {
-        res.send("Some uploading error");
-    }
-})
+router.post('/editProfile',(req,res)=>{
   updateProfile(req,res);
 })
 router.get("/hiddencontent",verifyToken, function (req, res) {
     if (!req.user) {
-      return 
       res.status(403)
         .send({
           message: "error"
